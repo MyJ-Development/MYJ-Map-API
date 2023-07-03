@@ -13,5 +13,8 @@ RUN npm install
 # Copiar el código fuente de la aplicación al contenedor
 COPY . .
 
+# Exponer el puerto en el que se ejecuta la aplicación
+EXPOSE 5000
+
 # Comando para ejecutar la aplicación
 CMD ["node", "app.js"]
