@@ -49,18 +49,19 @@ app.get('/markers', (req, res) => {
 
 // Ruta POST para agregar un nuevo marcador
 app.post('/markers', (req, res) => {
-  const { lat, lng, type } = req.body;
-  const query = 'INSERT INTO markers (lat, lng, type) VALUES (?, ?, ?)';
+  const { lat, lng, type, description } = req.body;
+  const query = 'INSERT INTO markers (lat, lng, type, description) VALUES (?, ?, ?, ?)';
   console.info("POST /markers");
-  db.query(query, [lat, lng, type], (err, result) => {
+  db.query(query, [lat, lng, type, description], (err, result) => {
     if (err) {
       console.error('Error insertando marcador:', err);
       res.status(500).json({ error: 'Error del servidor al insertar marcador' });
       return;
     }
-    res.json({ id: result.insertId, lat, lng, type });
+    res.json({ id: result.insertId, lat, lng, type, description });
   });
 });
+
 
 // Ruta DELETE para eliminar un marcador
 app.delete('/markers/:id', (req, res) => {
