@@ -80,10 +80,31 @@ app.delete('/markers/:id', (req, res) => {
 // Ruta PUT para actualizar un marcador
 app.put('/markers/:id', (req, res) => {
   const { id } = req.params;
-  const { lat, lng, type } = req.body;
+  const { lat, lng, type, description } = req.body;
+  // Initialize an array to store our query fields
+  let queryFields = [];
+  // Initialize a string to hold the query statement
+  let query = 'UPDATE markers SET ';
+  if (lat) {
+    queryFields.push(lat);
+    query += 'lat = ?,';
+  }
+  if (lng) {
+    queryFields.push(lng);
+    query += 'lng = ?,';
+  }
+  if (type) {
+    queryFields.push(type);
+    query += 'type = ?,';
+  }
+  if (description) {
+    queryFields.push(description);
+    query += 'description = ?,';
+  }
+  query = query.slice(0, -1) + ' WHERE id = ?';
+  queryFields.push(id);
   console.info("PUT /markers");
-  const query = 'UPDATE markers SET lat = ?, lng = ?, type = ? WHERE id = ?';
-  db.query(query, [lat, lng, type, id], (err, result) => {
+  db.query(query, queryFields, (err, result) => {
     if (err) {
       console.error('Error actualizando marcador:', err);
       res.status(500).json({ error: 'Error del servidor al actualizar marcador' });
@@ -92,6 +113,8 @@ app.put('/markers/:id', (req, res) => {
     res.json({ success: true });
   });
 });
+
+
 
 // Ruta GET para obtener los tipos de marcadores
 app.get('/marker-types', (req, res) => {
